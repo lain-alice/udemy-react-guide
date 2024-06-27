@@ -7,9 +7,11 @@ import EventItem from "./EventItem";
 
 export default function FindEventSection() {
   const searchElement = useRef();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState();
+  // 검색어를 상태로 관리하고 있어서 상태 바뀔 대마다 다시 실행됨
+  // 리액트 쿼리는 검색어마다 다른 http 요청전송
 
-  const { data, isPending, isError, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["events", { search: searchTerm }],
     // 모든 이벤트가 아닌 검색어와 일치하는 이벤트만 가져움
     // 쿼리키가 검색결과 정보 포함, 이 정보는 동적으로 변해야 함, 검색어만 해당하니까
@@ -21,6 +23,10 @@ export default function FindEventSection() {
     // 리액트 쿼리에서 실제로 리액트 쿼리에서 호출될 함수
     // searchTerm으로 fetchEvents, queryKey 동적 업데이트
     // fetchEvents 함수에 searchTerm이라 이름지은 프로퍼티가 담긴 객체 전달
+    enabled: searchTerm !== undefined,
+    // false면 쿼리 비활성화, 요청 전송 x (기본값 true)
+    // 검색어 입력하면 true 안 입력하면 false
+    // 처음에 이벤트 표시 안 되게 하기: 검색어 useState에 아무 값도 없어야(undefined)
   });
   // input에 입력된 검색어가 fetchEvents에 전달돼야 함
   // 검색어가 없으면 쿼리 전송되지 않도록 해야 함
@@ -37,9 +43,13 @@ export default function FindEventSection() {
 
   let content = <p>Please enter a search term and to find events.</p>;
 
-  if (isPending) {
+  if (isLoading) {
     content = <LoadingIndicator />;
   }
+
+  // isLoading, isPending 차이
+  // isLoading은 쿼리 비활성화됐다고 true 되지 않음
+  // isLoading 대신 쓰면 검색창 밑에 로딩스피너 안 뜨고 기본 텍스트 뜸
 
   if (isError) {
     content = (

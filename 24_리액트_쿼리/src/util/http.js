@@ -1,18 +1,9 @@
 export async function fetchEvents({ signal, searchTerm }) {
   console.log(searchTerm);
-
-  // console.log(searchTerm); 하면 나오는 객체... 쿼리키 정보와 요청 취소 신호 전달하는 객체
-  // 요청 완료되기 전에 사용자가 나가거나 하면 리액트쿼리가 자동으로 취소해줌
-  // searchTerm을 그냥 받으면 객체 채로 url에 들어감
-  // 중괄호 치고 구조분해 할당으로 필요한 키의 밸류만 받아야
-
   let url = "http://localhost:3000/events";
-  // url을 동적으로 구성
 
   if (searchTerm) {
-    // searchTerm이 빈 문자 아니고 값 있으면
-
-    url += "?serach=" + searchTerm;
+    url += "?search=" + searchTerm;
   }
 
   // 검색결과 없어도 함수 호출 가능, 검색어 있으면 백엔드에 보내줌
@@ -33,4 +24,42 @@ export async function fetchEvents({ signal, searchTerm }) {
   const { events } = await response.json();
 
   return events;
+}
+
+export async function createNewEvent(eventData) {
+  const response = await fetch(`http://localhost:3000/events`, {
+    method: "POST",
+    body: JSON.stringify(eventData),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const error = new Error("An error occurred while creating the event");
+    error.code = response.status;
+    error.info = await response.json();
+    throw error;
+  }
+
+  const { event } = await response.json();
+
+  return event;
+}
+
+export async function fetchSelectableImages({ signal }) {
+  const response = await fetch(`http://localhost:3000/events/images`, {
+    signal,
+  });
+
+  if (!response.ok) {
+    const error = new Error("An error occurred while fetching the images");
+    error.code = response.status;
+    error.info = await response.json();
+    throw error;
+  }
+
+  const { images } = await response.json();
+
+  return images;
 }
