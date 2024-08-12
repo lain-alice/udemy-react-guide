@@ -12,11 +12,11 @@ export default function NewEventsSection() {
     // 꼭 데이터가 반환되는 거 아님, 에러 발생할 수 있음
     // isError가 true 되게 하려면 response 코드가 error 반환할 수 있어야
     // refetch 수동으로 호출해 클릭 시 다시 전송 가능
-    queryKey: ["events"], // 여러 개 들어갈 수 있고 문자열 한정 아님
+    queryKey: ["events", { max: 3 }], // 여러 개 들어갈 수 있고 문자열 한정 아님
     // 모든 GET HTTP 요청에는 쿼리 키가 있다
     // 내부에서 요청된 데이터를 캐시함
     // 배열 형태의 키를 내부적으로 저장, 다시 사용할 때마다 배열 키 확인하고 재사용
-    queryFn: fetchEvents,
+    queryFn: ({ signal, queryKey }) => fetchEvents({ signal, ...queryKey[1] }), // 스프레드 구조분해할당, queryKey[1]은 { max: 3 }
     // 쿼리 함수, 요청 전송 시 실제로 실행할 코드 정의
     // 프로미스를 반환하는 함수여야 함
 

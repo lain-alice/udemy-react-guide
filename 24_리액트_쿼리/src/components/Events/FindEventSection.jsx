@@ -19,7 +19,7 @@ export default function FindEventSection() {
     // 아래의 ref를 여기 또 쓰는 건 적절하지 않음, ref는 상태와 달리 함수 다시 실행되도록 할 수 없음
     // 입력값이 변해도 이 쿼리는 업데이트, 재전송 x
     // 사용자가 다른 검색어 입력하면 새 데이터 가져오도록 하려면?
-    queryFn: ({ signal }) => fetchEvents({ signal, searchTerm }),
+    queryFn: ({ signal, queryKey }) => fetchEvents({ signal, ...queryKey[1] }),
     // 리액트 쿼리에서 실제로 리액트 쿼리에서 호출될 함수
     // searchTerm으로 fetchEvents, queryKey 동적 업데이트
     // fetchEvents 함수에 searchTerm이라 이름지은 프로퍼티가 담긴 객체 전달
