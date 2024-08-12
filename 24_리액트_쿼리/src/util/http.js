@@ -70,6 +70,7 @@ export async function fetchSelectableImages({ signal }) {
 }
 
 export async function fetchEvent({ id, signal }) {
+  // signal은 리액트 쿼리가, id는 우리가 제공
   const response = await fetch(`http://localhost:3000/events/${id}`, {
     signal,
   });
