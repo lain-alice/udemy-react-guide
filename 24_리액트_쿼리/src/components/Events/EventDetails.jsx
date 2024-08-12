@@ -23,11 +23,19 @@ export default function EventDetails() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["events"],
+        refetchType: "none",
       });
       // 삭제된 이벤트 관련 모든 쿼리 무효화
       navigate("/events");
     },
   });
+
+  // 이벤트 삭제하면 네트워크에 404 하나 뜨는 이유?
+  // 모든 쿼리 무효화됐는데도 아직 세부정보 페이지에 있어서
+  // 리액트쿼리는 즉시 세부정보 다시 가져오기 트리거함
+
+  // refetchType: "none"으로 설정하면 즉시 자동 트리거 x
+  // 대신 기존 쿼리 무효화되고 다음 요청 때 재실행
 
   function handleDelete() {
     mutate({ id: params.id });
